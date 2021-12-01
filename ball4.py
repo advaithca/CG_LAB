@@ -1,3 +1,5 @@
+# This program is just a simple ball animation
+
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
