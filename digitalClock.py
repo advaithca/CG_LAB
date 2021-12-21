@@ -6,6 +6,8 @@ from sys import argv
 from math import radians, cos, sin, tan
 from datetime import datetime
 
+TIME = datetime.now().strftime("%H:%M:%S").split(':')
+
 def translate(num, factor):
     for i in num:
         for j  in i:
@@ -25,7 +27,7 @@ C1 = [-650, 100]
 C2 = [-650, -100]
 C3 = [250, 100]
 C4 = [250, -100]
-
+C5 = [-1200, 400]
 class digit:
     def __init__(self,args):
         self.a = args[0]
@@ -129,7 +131,7 @@ SO = digit(translate([
 
 def init():
     glClearColor(1.0,1.0,1.0,1.0)
-    gluOrtho2D(-1500,1500,-1500,1500)
+    gluOrtho2D(-1500,1500,-500,500)
 
 def Sign(a):
     if a  > 0 :
@@ -190,9 +192,12 @@ def drawCir(A):
 
 def drawClock():
     glClear(GL_COLOR_BUFFER_BIT)
-    global HZ, HO, MZ, MO, SZ, SO, C1, C2, C3, C4, H0, H1, M0, M1, S0, S1
-    glColor3f(0.0,0.0,0.0)
+    global HZ, HO, MZ, MO, SZ, SO, C1, C2, C3, C4, H0, H1, M0, M1, S0, S1, C5
+    
     glPointSize(8)
+    glColor3f(2.55,1.65,0) if int(TIME[0]) < 12 else glColor3f(0,0,1) 
+    drawCir(C5)
+    glColor3f(0.0,0.0,0.0)
     drawSeg(HZ.getSeg(H0))
     drawSeg(HO.getSeg(H1))
     drawCir(C1)
@@ -226,7 +231,7 @@ def update(val):
 def main():
     glutInit(argv)
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
-    glutInitWindowSize(700,700)
+    glutInitWindowSize(600,200)
     glutInitWindowPosition(110,55)
     glutCreateWindow("Digital Clock")
     glutDisplayFunc(drawClock)
