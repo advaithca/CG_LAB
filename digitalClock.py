@@ -5,6 +5,10 @@ from OpenGL.GLUT import *
 from sys import argv
 from math import radians, cos, sin, tan
 from datetime import datetime
+from random import random
+
+dm = False
+f = False
 
 TIME = datetime.now().strftime("%H:%M:%S").split(':')
 
@@ -130,6 +134,7 @@ SO = digit(translate([
 
 
 def init():
+    global dm
     glClearColor(1.0,1.0,1.0,1.0)
     gluOrtho2D(-1500,1500,-500,500)
 
@@ -192,12 +197,22 @@ def drawCir(A):
 
 def drawClock():
     glClear(GL_COLOR_BUFFER_BIT)
-    global HZ, HO, MZ, MO, SZ, SO, C1, C2, C3, C4, H0, H1, M0, M1, S0, S1, C5
-    
+    global HZ, HO, MZ, MO, SZ, SO, C1, C2, C3, C4, H0, H1, M0, M1, S0, S1, C5, dm, f
+    glColor3f(0.0,0.0,0.0) if dm == True else glColor3f(1.0,1.0,1.0)
+    if f == True:
+        glColor3f(random(),random(),random())
+    glBegin(GL_POLYGON)
+    glVertex2f(-1500,500)
+    glVertex2f(-1500,-500)
+    glVertex2f(1500,-500)
+    glVertex2f(1500,500)
+    glEnd()
     glPointSize(8)
     glColor3f(2.55,1.65,0) if int(TIME[0]) < 12 else glColor3f(0,0,1) 
     drawCir(C5)
-    glColor3f(0.0,0.0,0.0)
+    glColor3f(0.0,0.0,0.0) if dm == False else glColor3f(1.0,1.0,1.0)
+    if f == True:
+        glColor3f(random(),random(),random())
     drawSeg(HZ.getSeg(H0))
     drawSeg(HO.getSeg(H1))
     drawCir(C1)
@@ -215,7 +230,7 @@ def drawClock():
 
 def update(val):
     time = datetime.now().strftime("%H:%M:%S").split(':')
-    global H0, H1, M0, M1, S0, S1
+    global H0, H1, M0, M1, S0, S1, dm, f
     glutPostRedisplay()
     glutTimerFunc(1000,update,0)
     H0 = int(int(time[0])/10)
@@ -227,6 +242,18 @@ def update(val):
     S0 = int(int(time[2])/10)
     S1 = int(time[2])%10
 
+def darkmode(option):
+    global dm, f
+    if option == 1:
+        dm = True
+        f = False
+    elif option == 2:
+        dm = False
+        f = False
+    elif option == 3:
+        f = True
+        dm = False
+    return 0
 
 def main():
     glutInit(argv)
@@ -237,7 +264,11 @@ def main():
     glutDisplayFunc(drawClock)
     glutTimerFunc(0,update,0)
     glutIdleFunc(drawClock)
-
+    glutCreateMenu(darkmode)
+    glutAttachMenu(GLUT_RIGHT_BUTTON)
+    glutAddMenuEntry("Dark Mode",1)
+    glutAddMenuEntry("Light Mode",2)
+    glutAddMenuEntry("Fuck you",3)
     init()
     glutMainLoop()
 
