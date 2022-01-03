@@ -1,0 +1,2 @@
+pyopengl
+pyopengl_accelerate
